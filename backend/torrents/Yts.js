@@ -6,6 +6,22 @@ const cheerio = require("cheerio");
 const searchOptions = require("../helper/searchOptions");
 const pageScraper = require("../helper/pageScraper");
 
+/**
+ * handles everything related to yts
+ * @class Yts
+ * @property {string} scrapeUrl the url which is being scrapped
+ * @property {string} baseUrl the base url of the site
+ * @property {string} searchUrl the search url of the site
+ *
+ * @function scrapeSearch scrapes the search results
+ * @function scrapeTrending scrapes the trending torrents
+ * @function getTorrentsUrls scrapes the torrent urls after running a search
+ * @function getTorrentDetails scrapes the torrent details
+ * @function makeTorrentsObject makes an object of the torrent details
+ *
+ * @example const yts = new Yts();
+ *
+ */
 class Yts {
   constructor() {
     this.name = "Yts";
@@ -15,6 +31,12 @@ class Yts {
     this.scrapeUrl = "";
   }
 
+  /**
+   * takes a search url and an empty object then returns the object containing details of torrents
+   * @param {String} url the url of the page to be scraped
+   * @param {Object} obj the object to be filled with the details
+   * @returns object with the details of the torrent
+   */
   async getTorrentDetails(url, obj = {}) {
     let response = await fetch(url, this.fetchOptions);
     let html = await response.text();
@@ -76,6 +98,10 @@ class Yts {
     }
   }
 
+  /**
+   *
+   * @returns an array of objects containing the details of the trending torrents
+   */
   async scrapeTrending() {
     let url = `${this.baseUrl}/trending-movies`;
     this.scrapeUrl = url;
@@ -86,6 +112,9 @@ class Yts {
     return torrentObjects;
   }
 
+  /**
+   * takes a html and returns an array of objects containing the details of the torrents
+   */
   async makeTorrentObject(html) {
     let torrentUrls = await this.getTorrentUrls(html);
     let torrentDetails = [];
@@ -95,6 +124,9 @@ class Yts {
     return torrentDetails;
   }
 
+  /**
+   * takes a html and returns an array of torrent urls
+   */
   async getTorrentUrls(html) {
     let torrentUrls = [];
     let $ = cheerio.load(html);
@@ -104,6 +136,14 @@ class Yts {
     return torrentUrls;
   }
 
+  /**
+   * this function takes two arguments, the "query" to be searched and the "page" number
+   * @param {String} query the search query
+   * @param {Number} page the page number to scrape
+   * @returns array of torrent objects with all the details
+   *
+   * @example yts.scrapeSearch("avengers", 1) // returns an array of torrent objects
+   */
   async scrapeSearch(query, page = 1) {
     let url;
     if (page > 1) {

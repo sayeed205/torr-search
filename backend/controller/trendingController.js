@@ -21,6 +21,11 @@ const handle1337x = async (section, category) => {
   return { torrents, scrappedUrl };
 };
 
+/**
+ * The handleYts function scrapes the YTS website for trending torrents.
+ *
+ * @return A promise that resolves to an object containing the torrents and the scrapped url.
+ */
 const handleYts = async () => {
   torrents = await yts.scrapeTrending();
   scrappedUrl = yts.scrapeUrl;
