@@ -3,8 +3,8 @@
  */
 
 const cheerio = require("cheerio");
-const searchOptions = require("../helper/searchOptions.js");
-const pageScraper = require("../helper/pageScraper.js");
+const searchOptions = require("../controller/helper/searchOptions.js");
+const pageScraper = require("../controller/helper/pageScraper.js");
 
 /**
  * takes a string and makes it capitalized
