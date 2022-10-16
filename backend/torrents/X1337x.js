@@ -3,8 +3,8 @@
  */
 
 const cheerio = require("cheerio");
-const searchOptions = require("../controller/helper/searchOptions.js");
-const pageScraper = require("../controller/helper/pageScraper.js");
+const searchOptions = require("../helper/searchOptions.js");
+const pageScraper = require("../helper/pageScraper.js");
 
 /**
  * takes a string and makes it capitalized
@@ -64,13 +64,12 @@ class X1337x {
    */
   async getTorrentDetails(url, obj = {}) {
     let name = url.trim().split("/");
-    obj.name = name[name.length - 2].replace(/-/g, " ");
+    obj.title = name[name.length - 2].replace(/-/g, " ");
 
     let response = await fetch(url, this.searchOptions);
     let html = await response.text();
     let $ = cheerio.load(html);
     try {
-      // obj["name"] = $(".box-info-heading").text().trim();
       let informationSection = $(".list ").eq(1).html(); // information section 1
       informationSection += $(".list ").eq(2).html(); // information section 2
       // let information = {};
@@ -159,8 +158,7 @@ class X1337x {
     } else {
       return torrentUrls; // TODO: throw proper error
     }
-    // let response = await fetch(url, this.searchOptions);
-    // let html = await response.text();
+
     this.scrapeUrl = url;
     let html = await pageScraper(url);
     let torrentObjects = await this.makeTorrentsObject(html);

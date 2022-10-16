@@ -3,8 +3,10 @@
  */
 
 const X1337x = require("../torrents/X1337x.js");
+const Yts = require("../torrents/Yts");
 
 const x1337x = new X1337x();
+const yts = new Yts();
 let scrappedUrl, torrents;
 
 /**
@@ -19,6 +21,12 @@ const handle1337x = async (section, category) => {
   return { torrents, scrappedUrl };
 };
 
+const handleYts = async () => {
+  torrents = await yts.scrapeTrending();
+  scrappedUrl = yts.scrapeUrl;
+  return { torrents, scrappedUrl };
+};
+
 /**
  * this function checks which site to scrape from and return all the needed data
  * @param {String} site the site to search from // "1337x" "yts" "rarbg" "limetorrents"
@@ -30,8 +38,8 @@ const handleSite = async (site, section, category) => {
   switch (site) {
     case "1337x":
       return handle1337x(section, category);
-    case "yts": // TODO: add yts
-      return yts;
+    case "yts":
+      return handleYts();
     case "rarbg": // TODO: add rarbg
       return rarbg;
     case "limetorrents": // TODO: add limetorrents
@@ -64,8 +72,12 @@ const getTorrents = async (req, res) => {
     result.status = "success";
     result["showing result"] = torrents.length;
     result["total torrents"] = torrents.length;
-    result["section"] = section;
-    result["category"] = category;
+    site === "yts"
+      ? (result.section = "yts don't have any section")
+      : (result["section"] = section);
+    site === "yts"
+      ? (result.category = "yts only have movies category")
+      : (result["category"] = category);
     result["scrapped url"] = scrappedUrl;
 
     res.status(200).json(result);
